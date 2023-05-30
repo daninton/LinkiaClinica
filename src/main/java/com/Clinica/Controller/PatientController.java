@@ -32,6 +32,7 @@ public class PatientController {
     public ResponseEntity<PatientOutputDTO> addPatient(@RequestBody PatientInputDTO patientInputDto) {
         System.out.println(patientInputDto); // print out the DTO
         PatientOutputDTO savedPatient = patientService.addPatient(patientInputDto);
+        System.out.println(savedPatient);
         return ResponseEntity.ok(savedPatient);
     }
 

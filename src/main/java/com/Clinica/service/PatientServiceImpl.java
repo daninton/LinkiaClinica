@@ -6,6 +6,7 @@ import com.Clinica.entity.Patient;
 import com.Clinica.respository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public PatientOutputDTO addPatient(PatientInputDTO patientInputDto) {
         Patient patient = patientMapper.patientInputDTOToPatient(patientInputDto);
         Patient savedPatient = patientRepository.save(patient);
