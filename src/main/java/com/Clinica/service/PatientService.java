@@ -1,35 +1,19 @@
 package com.Clinica.service;
 
+import com.Clinica.Controller.DTO.PatientInputDTO;
+import com.Clinica.Controller.DTO.PatientOutputDTO;
 import com.Clinica.entity.Patient;
-import com.Clinica.respository.PatientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class PatientService {
+public interface PatientService {
+    List<PatientOutputDTO> getAllPatients();
 
-    @Autowired
-    private PatientRepository patientRepository;
+    PatientOutputDTO getPatientById(Long id);
 
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
-    }
+    PatientOutputDTO addPatient(PatientInputDTO patientInputDto);
 
-    public Patient getPatientById(Long id) {
-        return patientRepository.findById(id).orElse(null);
-    }
+    PatientOutputDTO updatePatient(Long id, PatientInputDTO patientInputDto);
 
-    public Patient addPatient(Patient patient) {
-        return patientRepository.save(patient);
-    }
-
-    public Patient updatePatient(Patient patient) {
-        return patientRepository.save(patient);
-    }
-
-    public void deletePatient(Long id) {
-        patientRepository.deleteById(id);
-    }
+    void deletePatient(Long id);
 }
