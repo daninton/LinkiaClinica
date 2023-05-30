@@ -30,8 +30,8 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<PatientOutputDTO> addPatient(@RequestBody PatientInputDTO patientInputDto) {
-        System.out.println(patientInputDto); // print out the DTO
         PatientOutputDTO savedPatient = patientService.addPatient(patientInputDto);
+        System.out.println(savedPatient); // print out the DTO
         return ResponseEntity.ok(savedPatient);
     }
 
