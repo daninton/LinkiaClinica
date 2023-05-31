@@ -17,43 +17,61 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
-    @Autowired
-    private PatientMapper patientMapper;
-
     @Override
     public List<PatientOutputDTO> getAllPatients() {
-        return patientRepository.findAll()
-                .stream()
-                .map(patientMapper::patientToPatientOutputDTO)
+        List<Patient> patients = patientRepository.findAll();
+        return patients.stream()
+                .map(this::convertToPatientOutputDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public PatientOutputDTO getPatientById(Long id) {
-        Patient patient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Patient not found"));
-        return patientMapper.patientToPatientOutputDTO(patient);
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        return convertToPatientOutputDTO(patient);
     }
 
     @Override
-    @Transactional
     public PatientOutputDTO addPatient(PatientInputDTO patientInputDto) {
-        Patient patient = patientMapper.patientInputDTOToPatient(patientInputDto);
+        Patient patient = convertToPatient(patientInputDto);
         Patient savedPatient = patientRepository.save(patient);
-        return patientMapper.patientToPatientOutputDTO(savedPatient);
+        return convertToPatientOutputDTO(savedPatient);
     }
 
     @Override
     public PatientOutputDTO updatePatient(Long id, PatientInputDTO patientInputDto) {
-        Patient existingPatient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Patient not found"));
+        Patient existingPatient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
         existingPatient.setName(patientInputDto.getName());
         existingPatient.setLastName(patientInputDto.getLastName());
         existingPatient.setAge(patientInputDto.getAge());
+
         Patient updatedPatient = patientRepository.save(existingPatient);
-        return patientMapper.patientToPatientOutputDTO(updatedPatient);
+        return convertToPatientOutputDTO(updatedPatient);
     }
 
     @Override
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
+
+    private PatientOutputDTO convertToPatientOutputDTO(Patient patient) {
+        PatientOutputDTO outputDTO = new PatientOutputDTO();
+        outputDTO.setId(patient.getId());
+        outputDTO.setName(patient.getName());
+        outputDTO.setLastName(patient.getLastName());
+        outputDTO.setAge(patient.getAge());
+        return outputDTO;
+    }
+
+    private Patient convertToPatient(PatientInputDTO patientInputDto) {
+        Patient patient = new Patient();
+        patient.setName(patientInputDto.getName());
+        patient.setLastName(patientInputDto.getLastName());
+        patient.setAge(patientInputDto.getAge());
+        return patient;
+    }
 }
+
